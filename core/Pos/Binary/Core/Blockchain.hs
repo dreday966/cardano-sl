@@ -38,7 +38,7 @@ instance ( Typeable b
         -- and decode it, eliminating this failure case. Protocol magic checks
         -- must not happen in decoding.
         when (blockMagic /= getProtocolMagic protocolMagic) $ cborError $
-            "GenericBlockHeader failed with wrong magic: " <> show blockMagic
+            "GenericBlockHeader failed with wrong magic: " <> pretty blockMagic
         _gbhPrevBlock <- ({-# SCC "decode_header_prev" #-} decode)
         _gbhBodyProof <- ({-# SCC "decode_header_body_proof" #-} decode)
         _gbhConsensus <- ({-# SCC "decode_header_consensus" #-} decode)
@@ -85,4 +85,4 @@ instance ( HasConfiguration
        case t of
            0 -> BlockHeaderGenesis <$!> decode
            1 -> BlockHeaderMain <$!> decode
-           _ -> cborError $ "decode@BlockHeader: unknown tag " <> show t
+           _ -> cborError $ "decode@BlockHeader: unknown tag " <> pretty t
