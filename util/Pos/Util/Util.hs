@@ -64,6 +64,7 @@ module Pos.Util.Util
        , divRoundUp
        , sleep
 
+       , tempMeasure
        ) where
 
 import           Universum
@@ -83,7 +84,7 @@ import qualified Data.Map as M
 import           Data.Ratio ((%))
 import qualified Data.Semigroup as Smg
 import qualified Data.Serialize as Cereal
-import           Data.Time.Clock (NominalDiffTime, UTCTime)
+import           Data.Time.Clock (NominalDiffTime, UTCTime, diffUTCTime, getCurrentTime)
 import           Data.Time.Clock.POSIX (posixSecondsToUTCTime)
 import           Data.Time.Units (Microsecond, toMicroseconds)
 import qualified Ether
@@ -388,3 +389,14 @@ median l = NE.sort l NE.!! middle
 -}
 sleep :: MonadIO m => NominalDiffTime -> m ()
 sleep n = liftIO (threadDelay (truncate (n * 10^(6::Int))))
+
+
+tempMeasure :: (MonadIO m) => Text -> m a -> m a
+tempMeasure label action = do
+    before <- liftIO getCurrentTime
+    !x <- action
+    after <- liftIO getCurrentTime
+    let d :: Integer
+        d = round $ 1000000 * toRational (after `diffUTCTime` before)
+    putText $ "tempMeasure " <> label <> ": " <> show d
+    pure x
