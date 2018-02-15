@@ -105,7 +105,6 @@ checkUpdateProposal it = do
     unless (checkSig SignUSProposal (upFrom it) toSign (upSignature it))
         (throwError "UpdateProposal: invalid signature")
     checkSoftwareVersion (upSoftwareVersion it)
-    forM_ (HM.keys (upData it)) checkSystemTag
 
 mkUpdateProposalWSign
     :: (HasConfiguration, Bi UpdateProposalToSign)
