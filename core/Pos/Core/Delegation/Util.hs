@@ -20,7 +20,6 @@ checkDlgPayload it = do
     unless (null duplicates) $
         throwError "Some of block's PSKs have the same issuer, which is prohibited"
     forM_ proxySKs validateProxySecretKey
-    pure ()
   where
     proxySKs = getDlgPayload it
     proxySKsDups psks =
